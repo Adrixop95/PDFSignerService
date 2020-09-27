@@ -33,7 +33,7 @@ jobs:
 
     - name: PyLint
       run: |
-        pylint --rcfile ./.pylintrc api core agregator_ofd agregator_repository backend_cms_repository cache_manager data_consistency_checker dataverse_client dataverse_repository img_proxy_client
+        pylint --rcfile ./.pylintrc routers/
 
     - name: Piprot
       run: |

@@ -10,7 +10,6 @@ ignore=CVS,
 ignore-patterns=
 jobs=0
 limit-inference-results=100
-load-plugins=pylint_django
 persistent=yes
 #rcfile=
 suggestion-mode=yes
