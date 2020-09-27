@@ -1,0 +1,10 @@
+[flake8]
+count = True
+max-line-length = 130
+exclude =
+    tests
+    .git
+    sample_data
+    migrations
+    settings
+    __init__.py

@@ -1,0 +1,48 @@
+on: [push]
+
+name: Python Checks
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    
+    strategy:
+      matrix:
+        python-version: [3.8]
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8
+        pip install piprot
+        pip install safety
+        pip install PyLint
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        
+    - name: Flake8
+      run: |
+        flake8 .
+
+    - name: PyLint
+      run: |
+        pylint --rcfile ./.pylintrc api core agregator_ofd agregator_repository backend_cms_repository cache_manager data_consistency_checker dataverse_client dataverse_repository img_proxy_client
+
+    - name: Piprot
+      run: |
+        piprot
+
+    - name: PipCheck
+      run: |
+        pip check
+
+    - name: PipCheck
+      run: |
+        safety check -r requirements.txt
