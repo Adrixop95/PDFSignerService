@@ -14,18 +14,19 @@ from fastapi import APIRouter, File, UploadFile, Form
 router = APIRouter()
 
 
-@router.post("/encrypt")
-async def signpdf(filecert: UploadFile = File(...), filepdf: UploadFile = File(...),
-                  sigflags: str = Form(...),
-                  contact: str = Form(...),
-                  location: str = Form(...),
-                  reason: str = Form(...)):
+@router.post("/sign")
+async def sign_pdf(filecert: UploadFile = File(...),
+                   filepdf: UploadFile = File(...),
+                   sigflags: str = Form(...),
+                   contact: str = Form(...),
+                   location: str = Form(...),
+                   reason: str = Form(...)):
 
     try:
         suffix = Path(filecert.filename).suffix
         with NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
             shutil.copyfileobj(filecert.file, tmp)
-            tmp_path = Path(tmp.name)
+            cert_tmp_path = Path(tmp.name)
     finally:
         filecert.file.close()
 
@@ -48,7 +49,7 @@ async def signpdf(filecert: UploadFile = File(...), filepdf: UploadFile = File(.
         'reason': reason,
     }
 
-    with open(tmp_path, 'rb') as fp:
+    with open(cert_tmp_path, 'rb') as fp:
         p12 = pkcs12.load_key_and_certificates(fp.read(), b'1234', backends.default_backend())
 
     datau = open(pdf_tmp_path, 'rb').read()

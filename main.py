@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
-from routers import signpdf
+from routers import signpdf, verifypdf
 
 app = FastAPI(version="0.1.0")
 
@@ -14,9 +14,14 @@ app.add_middleware(
 )
 
 app.include_router(
-    signpdf.router
+    signpdf.router,
+    prefix="/pdf"
 )
 
+app.include_router(
+    verifypdf.router,
+    prefix="/pdf"
+)
 
 @app.get("/")
 async def root():
