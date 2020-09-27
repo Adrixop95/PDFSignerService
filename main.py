@@ -23,6 +23,7 @@ app.include_router(
     prefix="/pdf"
 )
 
+
 @app.get("/")
 async def root():
     return {"Greetings": "Hey! Thank you for using this service. If you don't know how to use it, check out readme on "
