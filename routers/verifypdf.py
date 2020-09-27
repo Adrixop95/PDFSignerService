@@ -33,6 +33,7 @@ async def verify_pdf(filepdf: UploadFile = File(...)):
     print(teststr)
 
     data = open(teststr, 'rb').read()
+    #print(data)
 
     (hashok, signatureok, certok) = pdf.verify(data, mytuple)
     print('signature ok?', signatureok)
