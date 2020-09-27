@@ -9,7 +9,7 @@ router = APIRouter()
 
 
 @router.post("/upload_cert_pems")
-async def upload_cert_pems():
+async def upload_cert_pems(filecert: UploadFile = File(...)):
     pass
 
 
@@ -24,18 +24,16 @@ async def verify_pdf(filepdf: UploadFile = File(...)):
     finally:
         filepdf.file.close()
 
-    mylist = []
+    temp_list = []
     for x in os.listdir("./cert_pems"):
-        mylist.append(open("./cert_pems/"+x).read())
-    mytuple = tuple(mylist)
-
-    print(type(teststr))
-    print(teststr)
+        temp_list.append(open("./cert_pems/"+x).read())
+    certs_tuple = tuple(temp_list)
 
     data = open(teststr, 'rb').read()
-    #print(data)
 
-    (hashok, signatureok, certok) = pdf.verify(data, mytuple)
-    print('signature ok?', signatureok)
-    print('hash ok?', hashok)
-    print('cert ok?', certok)
+    (hashok, signatureok, certok) = pdf.verify(data, certs_tuple)
+
+    return {"Is signature valid": signatureok,
+            "Is hash valid": hashok,
+            "Is cert valid": certok,
+            }
