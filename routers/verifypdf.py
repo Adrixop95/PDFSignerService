@@ -20,18 +20,21 @@ async def verify_pdf(filepdf: UploadFile = File(...)):
         with NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
             shutil.copyfileobj(filepdf.file, tmp)
             pdf_tmp_path = Path(tmp.name)
+            teststr = str(pdf_tmp_path)
     finally:
         filepdf.file.close()
 
-    files_path = os.listdir("./cert_pems/")
+    mylist = []
+    for x in os.listdir("./cert_pems"):
+        mylist.append(open("./cert_pems/"+x).read())
+    mytuple = tuple(mylist)
 
-    print(files_path)
+    print(type(teststr))
+    print(teststr)
 
-    for i in files_path:
-        print(i)
-        trusted = open("./cert_pems/"+i, 'rt').read()
+    data = open(teststr, 'rb').read()
 
-    data = open(pdf_tmp_path, 'rb').read()
-
-    #print(pdf.verify(data, trusted))
-    print(pdf.verify(pdf_tmp_path, "./cert_pems/ca-actalis.pem"))
+    (hashok, signatureok, certok) = pdf.verify(data, mytuple)
+    print('signature ok?', signatureok)
+    print('hash ok?', hashok)
+    print('cert ok?', certok)
