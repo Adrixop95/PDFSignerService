@@ -9,8 +9,13 @@ router = APIRouter()
 
 
 @router.post("/upload_cert_pems")
-async def upload_cert_pems(filecert: UploadFile = File(...)):
-    pass
+async def create_file(file: UploadFile = File(...)):
+    upload_folder = "./cert_pems/"
+    file_object = file.file
+    upload_folder = open(os.path.join(upload_folder, file.filename), 'wb+')
+    shutil.copyfileobj(file_object, upload_folder)
+    upload_folder.close()
+    return {"filename": file.filename}
 
 
 @router.post("/verify")
