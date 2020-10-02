@@ -3,7 +3,7 @@ from starlette.middleware.cors import CORSMiddleware
 
 from routers import signpdf, verifypdf
 
-app = FastAPI(version="0.1.0")
+app = FastAPI(root_path="/api/v1", version="0.1.0")
 
 
 app.add_middleware(

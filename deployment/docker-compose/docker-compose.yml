@@ -1,0 +1,58 @@
+version: "3.8"
+services:
+
+    pdfsignerservice_traefik:
+        image: "traefik:v2.3"
+        container_name: "pdfsignerservice_traefik"
+        command:
+            - "--providers.docker=true"
+            - "--providers.docker.exposedbydefault=true"
+            - "--entrypoints.web.address=:80"
+            - "--entrypoints.web-secure.address=:443"
+            - "--entrypoints.web.forwardedheaders.insecure"
+            - "--entrypoints.web.proxyprotocol.insecure"
+            - "--certificatesresolvers.letsencrypt.acme.email=example@example.com"
+            - "--certificatesresolvers.letsencrypt.acme.storage=/ssl/acme.json"
+            - "--certificatesresolvers.letsencrypt.acme.tlschallenge=true"
+        labels:
+            - "traefik.http.routers.http-catchall.rule=hostregexp(`{host:.+}`)"
+            - "traefik.http.routers.http-catchall.entrypoints=web"
+            - "traefik.http.routers.http-catchall.middlewares=redirect-to-https"
+            - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+        volumes:
+            - "/var/run/docker.sock:/var/run/docker.sock:ro"
+            - "traefik_le:/ssl"
+        ports:
+            - "80:80"
+            - "443:443"
+        networks:
+            - pdfsignerservice
+        restart: unless-stopped
+
+    pdfsignerservice:
+        image: "adrixop95/pdfsignerservice:latest"
+        container_name: "pdfsignerservice"
+        labels:
+            - traefik.enable=true
+            - traefik.http.routers.pdfsignerservice.rule=Host(`${URL}`) && PathPrefix(`/api/v1`)
+            - traefik.http.services.pdfsignerservice.loadbalancer.server.port=8000
+            - traefik.http.routers.pdfsignerservice.entrypoints=web-secure
+            - traefik.http.middlewares.pdfsignerservice.headers.accesscontrolallowmethods=GET,OPTIONS,PUT,POST,DELETE,PATCH
+            - traefik.http.middlewares.pdfsignerservice.headers.accesscontrolalloworigin=origin-list-or-null
+            - traefik.http.middlewares.pdfsignerservice.headers.accesscontrolmaxage=100
+            - traefik.http.middlewares.pdfsignerservice.headers.addvaryheader=true
+            - traefik.http.routers.pdfsignerservice.middlewares=barcode_generator-stripprefix
+            - traefik.http.middlewares.pdfsignerservice-stripprefix.stripprefix.prefixes=/api/v1
+            - traefik.http.middlewares.pdfsignerservice-stripprefix.stripprefix.forceslash=false
+            - traefik.http.routers.pdfsignerservice.tls=true
+            - traefik.http.routers.pdfsignerservice.tls.certresolver=letsencrypt
+        networks:
+            - pdfsignerservice
+        restart: unless-stopped
+
+volumes:
+    traefik_le:
+
+networks:
+    pdfsignerservice:
+        name: pdfsignerservice
