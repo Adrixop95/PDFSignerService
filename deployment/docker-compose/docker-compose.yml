@@ -41,7 +41,7 @@ services:
             - traefik.http.middlewares.pdfsignerservice.headers.accesscontrolalloworigin=origin-list-or-null
             - traefik.http.middlewares.pdfsignerservice.headers.accesscontrolmaxage=100
             - traefik.http.middlewares.pdfsignerservice.headers.addvaryheader=true
-            - traefik.http.routers.pdfsignerservice.middlewares=barcode_generator-stripprefix
+            - traefik.http.routers.pdfsignerservice.middlewares=pdfsignerservice-stripprefix
             - traefik.http.middlewares.pdfsignerservice-stripprefix.stripprefix.prefixes=/api/v1
             - traefik.http.middlewares.pdfsignerservice-stripprefix.stripprefix.forceslash=false
             - traefik.http.routers.pdfsignerservice.tls=true
