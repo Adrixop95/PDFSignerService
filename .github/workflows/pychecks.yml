@@ -32,7 +32,7 @@ jobs:
 
     - name: PyLint
       run: |
-        pylint --rcfile ./.pylintrc routers/
+        find . -type f -name "*.py" | xargs pylint --rcfile ./.pylintrc
 
     - name: PipCheck
       run: |
