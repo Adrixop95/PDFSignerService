@@ -20,14 +20,8 @@ jobs:
     
     - name: Install dependencies
       run: |
-        VENV_PATH="/opt/pysetup/.venv"
-        PYSETUP_PATH="/opt/pysetup"
-        POETRY_HOME="/opt/poetry"
-        pip install poetry
+        curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python        
         poetry install --no-dev
-        POETRY_VENV=$(ls -td /opt/pysetup/.venv/*/ | head -1)
-        source $POETRY_VENV/bin/activate
-        python -m pip install --upgrade pip
         pip install flake8
         pip install safety
         pip install PyLint
@@ -38,7 +32,7 @@ jobs:
 
     - name: PyLint
       run: |
-        pylint --rcfile ./.pylintrc routers/
+        find ./routers/ -type f -name "*.py" | xargs pylint --rcfile ./.pylintrc
 
     - name: PipCheck
       run: |
