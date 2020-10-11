@@ -20,11 +20,14 @@ jobs:
     
     - name: Install dependencies
       run: |
+        pip install poetry
+        poetry install --no-dev
+        POETRY_VENV=$(ls -td /root/.cache/pypoetry/virtualenvs/*/ | head -1)
+        source $POETRY_VENV/bin/activate
         python -m pip install --upgrade pip
         pip install flake8
         pip install safety
         pip install PyLint
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         
     - name: Flake8
       run: |
