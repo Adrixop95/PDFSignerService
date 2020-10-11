@@ -25,6 +25,7 @@ jobs:
         poetry add flake8
         poetry add safety
         poetry add PyLint
+        poetry show -v
         
     - name: Flake8
       run: |
