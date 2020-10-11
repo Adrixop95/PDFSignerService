@@ -26,6 +26,8 @@ jobs:
         poetry add safety
         poetry add PyLint
         poetry show -v
+        POETRY_VENV=$(ls -td /home/runner/.cache/pypoetry/virtualenvs/*/ | head -1)
+        source $POETRY_VENV/bin/activate
         
     - name: Flake8
       run: |
