@@ -35,12 +35,18 @@ jobs:
 
     - name: PyLint
       run: |
+        POETRY_VENV=$(ls -td /home/runner/.cache/pypoetry/virtualenvs/*/ | head -1)
+        source $POETRY_VENV/bin/activate
         find ./routers/ -type f -name "*.py" | xargs pylint --rcfile ./.pylintrc
 
     - name: PipCheck
       run: |
+        POETRY_VENV=$(ls -td /home/runner/.cache/pypoetry/virtualenvs/*/ | head -1)
+        source $POETRY_VENV/bin/activate
         pip check
 
     - name: PipCheck
       run: |
+        POETRY_VENV=$(ls -td /home/runner/.cache/pypoetry/virtualenvs/*/ | head -1)
+        source $POETRY_VENV/bin/activate
         safety check -r requirements.txt
